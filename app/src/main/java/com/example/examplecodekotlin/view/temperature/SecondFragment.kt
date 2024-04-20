@@ -9,29 +9,31 @@ import android.widget.Button
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.example.examplecodekotlin.R
+import com.example.examplecodekotlin.databinding.FragmentSecondBinding
 
 class SecondFragment : Fragment() {
 
-    private lateinit var btnChile: Button
-    private lateinit var btnUsa: Button
+    private lateinit var binding: FragmentSecondBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_second, container, false)
+    ): View {
+
+
+        binding = FragmentSecondBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initComponent(view)
         initListeners()
     }
 
     private fun initListeners() {
 
-        btnChile.setOnClickListener {
+        binding.btnChile.setOnClickListener {
 
             val idSantiago = "3871336"
             val bundle = bundleOf("idCity" to idSantiago)
@@ -39,7 +41,7 @@ class SecondFragment : Fragment() {
             findNavController().navigate(R.id.action_secondFragment_to_thirdFragment, bundle)
         }
 
-        btnUsa.setOnClickListener {
+        binding.btnUsa.setOnClickListener {
 
             val idNewYork = "5128581"
             val bundle = bundleOf("idCity" to idNewYork)
@@ -48,9 +50,4 @@ class SecondFragment : Fragment() {
         }
     }
 
-    private fun initComponent(view: View) {
-
-        btnChile = view.findViewById(R.id.btn_chile)
-        btnUsa = view.findViewById(R.id.btn_usa)
-    }
 }

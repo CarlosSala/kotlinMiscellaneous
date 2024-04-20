@@ -7,7 +7,6 @@ class Fruit(name: String, price: Double, rating: Float, image: Int) {
     var rating: Float = 0.0F
     var image: Int = 0
 
-
     init {
         this.name = name
         this.price = price

@@ -15,6 +15,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.examplecodekotlin.R
+import com.example.examplecodekotlin.databinding.FragmentThirdBinding
 import com.example.examplecodekotlin.model.City
 import com.example.examplecodekotlin.model.NetworkStatus
 import com.google.gson.Gson
@@ -22,24 +23,22 @@ import com.google.gson.Gson
 
 class ThirdFragment : Fragment() {
 
-    private lateinit var context: Context
+    private lateinit var binding: FragmentThirdBinding
 
-    private lateinit var tvTemperature: TextView
-    private lateinit var tvCity: TextView
-    private lateinit var tvWeather: TextView
-    private lateinit var secondBtn: Button
+    private lateinit var context: Context
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_third, container, false)
+    ): View {
+
+        binding = FragmentThirdBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initComponent(view)
         initListeners()
         getTemperature()
     }
@@ -60,19 +59,10 @@ class ThirdFragment : Fragment() {
 
     private fun initListeners() {
 
-        secondBtn.setOnClickListener {
+        binding.buttonSecond.setOnClickListener {
             findNavController().navigate(R.id.action_thirdFragment_to_secondFragment)
         }
     }
-
-    private fun initComponent(view: View) {
-
-        tvTemperature = view.findViewById(R.id.tv_temperature)
-        tvCity = view.findViewById(R.id.tv_city)
-        tvWeather = view.findViewById(R.id.tv_weather)
-        secondBtn = view.findViewById(R.id.button_second)
-    }
-
 
     private fun volleyRequest(url: String) {
 
@@ -85,9 +75,9 @@ class ThirdFragment : Fragment() {
                 val gson = Gson()
                 val res = gson.fromJson(response, City::class.java)
 
-                tvCity.text = res.name
-                tvTemperature.text = getString(R.string.temperature, res.main?.temp.toString())
-                tvWeather.text = res.weather?.get(0)?.description
+                binding.tvCity.text = res.name
+                binding.tvTemperature.text = getString(R.string.temperature, res.main?.temp.toString())
+                binding.tvWeather.text = res.weather?.get(0)?.description
 
             } catch (e: Exception) {
                 Log.i("Error request", e.toString())

@@ -153,19 +153,9 @@ class MainActivity2 : AppCompatActivity(), CompleteListener {
 
                 val result = response.body.string()
                 Log.i("RequestOkHttp, download complete", result)
-
-                // everything join to the main thread
-                /*   this@MainActivity2.runOnUiThread {
-                       try {
-                           Log.i("RequestOkHttp", result)
-                       } catch (e: Exception) {
-
-                       }
-                   }*/
             }
         })
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
@@ -173,12 +163,13 @@ class MainActivity2 : AppCompatActivity(), CompleteListener {
 
         val itemShare = menu?.findItem(R.id.share)
         val shareActionProvider =
-            itemShare?.let { MenuItemCompat.getActionProvider(it) } as ShareActionProvider
+            itemShare?.let {
+                MenuItemCompat.getActionProvider(it)
+            } as ShareActionProvider
         shareIntent(shareActionProvider)
 
         val itemSearch = menu.findItem(R.id.search)
         val viewSearch = itemSearch?.actionView as android.widget.SearchView
-
         viewSearch.queryHint = getString(R.string.write_your_name)
 
         viewSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
@@ -186,6 +177,7 @@ class MainActivity2 : AppCompatActivity(), CompleteListener {
         }
 
         viewSearch.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
+
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
                     Log.i("TextChange", newText)
@@ -202,7 +194,6 @@ class MainActivity2 : AppCompatActivity(), CompleteListener {
         })
         return super.onCreateOptionsMenu(menu)
     }
-
 
     private fun shareIntent(shareActionProvider: ShareActionProvider) {
 
@@ -225,7 +216,6 @@ class MainActivity2 : AppCompatActivity(), CompleteListener {
             }
         }
     }
-
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)

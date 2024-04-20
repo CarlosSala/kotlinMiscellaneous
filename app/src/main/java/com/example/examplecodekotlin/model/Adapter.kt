@@ -4,89 +4,84 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RatingBar
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.examplecodekotlin.R
+import com.example.examplecodekotlin.databinding.ItemRecyclerviewBinding
 
 class Adapter(
-    private var items: ArrayList<Fruit>, private var listener: ClickListener,
+    private var fruitArrayList: ArrayList<Fruit>,
+    private var clickListener: ClickListener,
     private var longClickListener: LongClickListener
 ) : RecyclerView.Adapter<Adapter.ViewHolder>() {
 
     private var multiSelection = false
-    private var viewHolder: ViewHolder? = null
     private var selectedItems: ArrayList<Int>? = null
 
     init {
         selectedItems = ArrayList()
     }
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
+        val binding =
+            ItemRecyclerviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding, clickListener, longClickListener)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        val fruit = fruitArrayList[position]
+
+        holder.bind(fruit)
+
+        if (selectedItems?.contains(position)!!)
+            holder.binding.root.setBackgroundColor(Color.LTGRAY)
+        else {
+            holder.binding.root.setBackgroundColor(Color.WHITE)
+        }
+    }
+
     class ViewHolder(
-        var view: View,
+        var binding: ItemRecyclerviewBinding,
         listener: ClickListener,
         longClickListener: LongClickListener
     ) :
-        RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener {
-
-        var iv: ImageView? = null
-        var tvName: TextView? = null
-        var tvPrice: TextView? = null
-        var ratingBar: RatingBar? = null
+        RecyclerView.ViewHolder(binding.root), View.OnClickListener, View.OnLongClickListener {
 
         // from interface
         private var lister: ClickListener? = null
         private var longClickListener: LongClickListener? = null
 
         init {
-            iv = this.view.findViewById(R.id.iv_fruit)
-            tvName = this.view.findViewById(R.id.tv_name)
-            tvPrice = this.view.findViewById(R.id.tv_price)
-            ratingBar = this.view.findViewById(R.id.ratingBar)
-
             this.lister = listener
             this.longClickListener = longClickListener
-            this.view.setOnClickListener(this)
-            this.view.setOnLongClickListener(this)
+            this.binding.root.setOnClickListener(this)
+            this.binding.root.setOnLongClickListener(this)
         }
 
         override fun onClick(v: View?) {
 
-            this.lister?.onclick(view, adapterPosition)
+            this.lister?.onclick(binding.root, adapterPosition)
         }
 
         override fun onLongClick(p0: View?): Boolean {
-            this.longClickListener?.longClick(view, adapterPosition)
+            this.longClickListener?.longClick(binding.root, adapterPosition)
             return true
         }
-    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        fun bind(fruit: Fruit) {
 
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_recyclerview, parent, false)
-        viewHolder = ViewHolder(view, listener, longClickListener)
-        return viewHolder!!
-    }
-
-    override fun getItemCount(): Int {
-        return items.count()
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
-        holder.iv?.setImageResource(item.image)
-        holder.tvName?.text = item.name
-        holder.tvPrice?.text = "$ " + item.price.toString()
-        holder.ratingBar?.rating = item.rating
-
-        if (selectedItems?.contains(position)!!)
-            holder.view.setBackgroundColor(Color.LTGRAY)
-        else {
-            holder.view.setBackgroundColor(Color.WHITE)
+            binding.ivFruit.setImageResource(fruit.image)
+            binding.tvName.text = fruit.name
+            binding.tvPrice.text = "$ " + fruit.price.toString()
+            binding.ratingBar.rating = fruit.rating
         }
     }
+
+
+    override fun getItemCount(): Int {
+        return fruitArrayList.count()
+    }
+
 
     fun initActionMode() {
         multiSelection = true
@@ -126,10 +121,10 @@ class Adapter(
         if (selectedItems?.count()!! > 0) {
             var itemsDeleted = ArrayList<Fruit>()
             for (index in selectedItems!!) {
-                itemsDeleted.add(items[index])
+                itemsDeleted.add(fruitArrayList[index])
             }
 
-            items.removeAll(itemsDeleted.toSet())
+            fruitArrayList.removeAll(itemsDeleted.toSet())
             selectedItems?.clear()
         }
     }
